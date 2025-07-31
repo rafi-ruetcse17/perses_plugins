@@ -39,3 +39,9 @@ Build the plugin for distribution:
 ```bash
 npm run build
 ```
+
+Run ClickHouse Plugin:
+
+```bash
+percli plugin start
+```
