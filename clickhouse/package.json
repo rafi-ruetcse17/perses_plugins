@@ -73,6 +73,15 @@
           "name": "ClickHouseDatasource"
         }
       }
+      ,{
+        "kind": "TimeSeriesQuery",
+        "spec": {
+          "display": {
+            "name": "ClickHouse Time Series Query"
+          },
+          "name": "ClickHouseTimeSeriesQuery"
+        }
+      }
     ]
   }
 }
