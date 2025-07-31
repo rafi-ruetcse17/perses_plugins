@@ -1,6 +1,8 @@
 {
   "kind": "ClickHouseDatasource",
   "spec": {
-    "directUrl": "http://localhost:9090",
+    "directUrl": "http://10.2.0.200/clickhouse",
+    "username": "admin",
+    "password": "ECJxvYeJtoLHAefU"
   }
 }

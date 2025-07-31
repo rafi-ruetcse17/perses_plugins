@@ -4,6 +4,8 @@ import { DatasourceClient } from '@perses-dev/plugin-system';
 export interface ClickHouseDatasourceSpec {
   directUrl?: string;
   proxy?: HTTPProxy;
+  username?: string;
+  password?: string;
 }
 
 interface QueryRequestParameters extends Record<string, string> {

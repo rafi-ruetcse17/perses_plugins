@@ -3,43 +3,86 @@ import { DatasourcePlugin } from '@perses-dev/plugin-system';
 import { ClickHouseDatasourceSpec, ClickHouseDatasourceClient } from './click-house-datasource-types';
 import { ClickHouseDatasourceEditor } from './ClickHouseDatasourceEditor';
 
-const createClient: DatasourcePlugin<ClickHouseDatasourceSpec, ClickHouseDatasourceClient>['createClient'] = (spec, options) => {
-  const { directUrl, proxy } = spec;
+const createClient: DatasourcePlugin<ClickHouseDatasourceSpec, ClickHouseDatasourceClient>['createClient'] = (
+  spec,
+  options
+) => {
+  const { directUrl, proxy, username, password } = spec;
   const { proxyUrl } = options;
 
-  // Use the direct URL if specified, but fallback to the proxyUrl by default if not specified
   const datasourceUrl = directUrl ?? proxyUrl;
   if (datasourceUrl === undefined) {
-    throw new Error('No URL specified for ClickHouseDatasource client. You can use directUrl in the spec to configure it.');
+    throw new Error(
+      'No URL specified for ClickHouseDatasource client. You can use directUrl in the spec to configure it.'
+    );
   }
 
-  const specHeaders = proxy?.spec.headers;
+  const specHeaders = proxy?.spec.headers || {};
+
+  // Add Basic Auth header if credentials are provided
+  if (username && password) {
+    const credentials = btoa(`${username}:${password}`);
+    specHeaders['Authorization'] = `Basic ${credentials}`;
+  }
 
   return {
     options: {
       datasourceUrl,
     },
     query: async (params, headers) => {
-      let url = `${datasourceUrl}/api/search`;
-      if (params) {
-        url += '?' + new URLSearchParams(params as Record<string, string>);
+      console.log('ClickHouse query called with:', { params, datasourceUrl, specHeaders });
+
+      // Use the actual query from params, not hardcoded
+      if (!params.query) {
+        throw new Error('No query provided in params');
       }
+
+      let finalQuery = params.query.trim();
+      if (!finalQuery.toUpperCase().includes('FORMAT')) {
+        finalQuery += ' FORMAT JSON';
+      }
+
+      // Option 2: Use GET with properly encoded query parameter
+      const url = new URL(datasourceUrl);
+      url.searchParams.set('query', finalQuery);
+      url.searchParams.set('database', params.database || 'default');
+
+      console.log('ClickHouse URL:', url.toString());
+      console.log('Final Query:', finalQuery);
+      console.log('Full params received:', params);
+
       const init = {
         method: 'GET',
-        headers: headers ?? specHeaders,
+        headers: {
+          ...specHeaders,
+          ...headers,
+        },
       };
 
-      const response = await fetch(url, init);
-
       try {
+        const response = await fetch(url.toString(), init);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('ClickHouse error response:', errorText);
+          return {
+            status: 'error',
+            data: [],
+            warnings: [errorText],
+          };
+        }
+
         const body = await response.json();
+        console.log('ClickHouse response:', body);
+
+        // ClickHouse with format=JSON returns { data: [...] }
         return {
-          status: response.ok ? 'success' : 'error',
-          data: body.data,
+          status: 'success',
+          data: body.data || body,
         };
       } catch (e) {
-        console.error('Invalid response from server', e);
-        throw new Error('Invalid response from server');
+        console.error('ClickHouse query failed:', e);
+        throw new Error(`ClickHouse query failed: ${e}`);
       }
     },
   };
@@ -48,5 +91,9 @@ const createClient: DatasourcePlugin<ClickHouseDatasourceSpec, ClickHouseDatasou
 export const ClickHouseDatasource: DatasourcePlugin<ClickHouseDatasourceSpec, ClickHouseDatasourceClient> = {
   createClient,
   OptionsEditorComponent: ClickHouseDatasourceEditor,
-  createInitialOptions: () => ({ directUrl: '' }),
+  createInitialOptions: () => ({
+    directUrl: '',
+    username: '',
+    password: '',
+  }),
 };
