@@ -4,40 +4,39 @@ import { ClickHouseTimeSeriesQuerySpec, DatasourceQueryResponse } from './click-
 import { DEFAULT_DATASOURCE } from './constants';
 
 function buildTimeSeries(response?: DatasourceQueryResponse): TimeSeries[] {
-  if (!response) {
+  if (!response || !response.data || response.data.length === 0) {
     return [];
   }
 
-  return response.data.map((res) => {
-    const { name, values } = res;
-
-    // TODO: map your data to the timeseries format expected for Panel plugins
-    return {
-      name,
-      values,
-    };
+  const values: Array<[number, number]> = response.data.map((row) => {
+    const timestamp = new Date(row.time).getTime();
+    const value = Number(row.log_count);
+    return [timestamp, value];
   });
+
+  return [
+    {
+      name: 'log_count',
+      values,
+    },
+  ];
 }
 
 export const getTimeSeriesData: TimeSeriesQueryPlugin<ClickHouseTimeSeriesQuerySpec>['getTimeSeriesData'] = async (
   spec,
   context
 ) => {
-  // return empty data if the query is empty
   if (spec.query === undefined || spec.query === null || spec.query === '') {
     return { series: [] };
   }
 
   const query = replaceVariables(spec.query, context.variableState);
 
-  const client = await context.datasourceStore.getDatasourceClient(
-    // A default datasource will be selected by matching the kind of datasource if not provided
-    spec.datasource ?? DEFAULT_DATASOURCE
-  );
+  const client = await context.datasourceStore.getDatasourceClient(spec.datasource ?? DEFAULT_DATASOURCE);
 
   const { start, end } = context.timeRange;
 
-  const response = await client.query({ 
+  const response = await client.query({
     start: start.getTime().toString(),
     end: end.getTime().toString(),
     query,
@@ -53,4 +52,4 @@ export const getTimeSeriesData: TimeSeriesQueryPlugin<ClickHouseTimeSeriesQueryS
   };
 
   return chartData;
-}
+};
