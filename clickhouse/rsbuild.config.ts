@@ -7,6 +7,7 @@ export const assetPrefix = "/plugins/ClickHouse/";
 // Expose the components that will be used in the UI, either Perses UI or embedded.
 const exposedModules: ModuleFederationOptions["exposes"] = [
   { "./ClickHouseDatasource" : "./src/datasources/click-house-datasource" },
+  { "./ClickHouseTimeSeriesQuery" : "./src/queries/click-house-time-series-query" },
 ];
 
 export default defineConfig({
