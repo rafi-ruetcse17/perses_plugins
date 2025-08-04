@@ -77,9 +77,18 @@
         "kind": "TimeSeriesQuery",
         "spec": {
           "display": {
-            "name": "ClickHouse Time Series Query"
+            "name": "ClickHouse Query"
           },
           "name": "ClickHouseTimeSeriesQuery"
+        }
+      }
+      ,{
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "Logs"
+          },
+          "name": "Logs"
         }
       }
     ]

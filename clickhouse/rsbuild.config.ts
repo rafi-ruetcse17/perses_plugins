@@ -8,6 +8,7 @@ export const assetPrefix = "/plugins/ClickHouse/";
 const exposedModules: ModuleFederationOptions["exposes"] = [
   { "./ClickHouseDatasource" : "./src/datasources/click-house-datasource" },
   { "./ClickHouseTimeSeriesQuery" : "./src/queries/click-house-time-series-query" },
+  { "./Logs" : "./src/panels/logs" },
 ];
 
 export default defineConfig({
