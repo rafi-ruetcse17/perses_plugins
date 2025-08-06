@@ -1,7 +1,7 @@
 import { TimeSeriesQueryPlugin, parseVariables } from '@perses-dev/plugin-system';
-import { getTimeSeriesData } from './get-time-series-data';
-import { ClickHouseTimeSeriesQueryEditor } from './ClickHouseTimeSeriesQueryEditor';
-import { ClickHouseTimeSeriesQuerySpec } from './click-house-time-series-query-types';
+import { getTimeSeriesData } from './get-click-house-data';
+import { ClickHouseTimeSeriesQueryEditor } from './ClickHouseQueryEditor';
+import { ClickHouseTimeSeriesQuerySpec } from './click-house-query-types';
 
 export const ClickHouseTimeSeriesQuery: TimeSeriesQueryPlugin<ClickHouseTimeSeriesQuerySpec> = {
   getTimeSeriesData,
