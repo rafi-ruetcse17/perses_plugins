@@ -2,6 +2,7 @@ import { TimeSeriesData, TimeSeries } from '@perses-dev/core';
 import { TimeSeriesQueryPlugin, replaceVariables } from '@perses-dev/plugin-system';
 import { ClickHouseTimeSeriesQuerySpec, DatasourceQueryResponse } from './click-house-query-types';
 import { DEFAULT_DATASOURCE } from './constants';
+import { LogEntry, LogsData } from '../../model/click-house-data-types';
 
 function buildTimeSeries(response?: DatasourceQueryResponse): TimeSeries[] {
   if (!response || !response.data || response.data.length === 0) {
@@ -22,43 +23,22 @@ function buildTimeSeries(response?: DatasourceQueryResponse): TimeSeries[] {
   ];
 }
 
-type LogEntry = {
-  Body?: string;
-  LogAttributes?: {
-    [key: string]: string;
-  };
-  ResourceAttributes?: {
-    [key: string]: string;
-  };
-  ScopeAttributes?: {
-    [key: string]: string;
-  };
-  ScopeName?: string;
-  ScopeVersion?: string;
-  ScopeSchemaUrl?: string;
-  ServiceName?: string;
-  SeverityNumber?: string;
-  SeverityText?: string;
-  SpanId?: string;
-  Timestamp: string;
-  TraceFlags?: string;
-  TraceId?: string;
-};
-
-function convertStreamsToLogs(streams: LogEntry[]) {
-  const entries = streams.map((entry) => ({
-    timestamp: entry.Timestamp,
-    severityNumber: entry.SeverityNumber,
-    severityText: entry.SeverityText,
-    serviceName: entry.ServiceName,
-    body: entry.Body,
-    k8sMetadata: entry.ResourceAttributes,
-    logAttributes: entry.LogAttributes,
-    trace: {
-      traceId: entry.TraceId,
-      spanId: entry.SpanId,
-      traceFlags: entry.TraceFlags,
-    },
+function convertStreamsToLogs(streams: LogEntry[]): LogsData {
+  const entries: LogEntry[] = streams.map((entry) => ({
+    Body: entry.Body,
+    LogAttributes: entry.LogAttributes,
+    ResourceAttributes: entry.ResourceAttributes,
+    ScopeAttributes: entry.ScopeAttributes,
+    ScopeName: entry.ScopeName,
+    ScopeVersion: entry.ScopeVersion,
+    ScopeSchemaUrl: entry.ScopeSchemaUrl,
+    ServiceName: entry.ServiceName,
+    SeverityNumber: entry.SeverityNumber,
+    SeverityText: entry.SeverityText,
+    SpanId: entry.SpanId,
+    Timestamp: entry.Timestamp,
+    TraceFlags: entry.TraceFlags,
+    TraceId: entry.TraceId,
   }));
 
   return {
