@@ -5,7 +5,7 @@ import {
   OptionsEditorProps,
 } from '@perses-dev/plugin-system';
 import { ReactElement, useEffect, useState } from 'react';
-import { ClickHouseTimeSeriesQuerySpec } from './click-house-time-series-query-types';
+import { ClickHouseTimeSeriesQuerySpec } from './click-house-query-types';
 import { DATASOURCE_KIND, DEFAULT_DATASOURCE } from './constants';
 type ClickHouseTimeSeriesQueryEditorProps = OptionsEditorProps<ClickHouseTimeSeriesQuerySpec>;
 export function ClickHouseTimeSeriesQueryEditor(props: ClickHouseTimeSeriesQueryEditorProps): ReactElement {
