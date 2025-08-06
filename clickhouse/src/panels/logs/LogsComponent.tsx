@@ -1,13 +1,28 @@
-import { ReactElement } from "react";
-import { LogsProps } from "./logs-types";
+import { ReactElement } from 'react';
+import { LogsProps } from './logs-types';
+import { Typography } from '@mui/material';
+import LogsList from './components/LogsList';
 
 export function LogsComponent(props: LogsProps): ReactElement | null {
   const { queryResults, spec } = props;
 
-  console.log("Panel data", queryResults);
-  console.log("Panel spec", spec);
+  console.log('Panel data', queryResults);
+  console.log('Panel spec', spec);
 
-  // TODO: implement your awesome panel component here
+  if (queryResults[0]?.data.logs === undefined) {
+    return (
+      <Typography
+        variant="h3"
+        sx={{
+          textAlign: 'center',
+          marginTop: 4,
+        }}
+      >
+        No logs to display
+      </Typography>
+    );
+  }
+  const logs = queryResults[0]?.data.logs.entries;
 
-  return <div>Panel goes here!</div>;
+  return <LogsList logs={logs} spec={spec} />;
 }
