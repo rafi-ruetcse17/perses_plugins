@@ -86,7 +86,7 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "Logs"
+            "name": "ClickHouse Logs"
           },
           "name": "Logs"
         }
