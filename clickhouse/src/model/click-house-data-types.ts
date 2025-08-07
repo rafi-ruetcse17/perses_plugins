@@ -31,7 +31,7 @@ export interface LogEntry {
   SeverityNumber?: string;
   SeverityText?: string;
   SpanId?: string;
-  Timestamp: string;
+  Timestamp: number;
   TraceFlags?: string;
   TraceId?: string;
 }
@@ -42,16 +42,7 @@ export interface LogsData {
   hasMore?: boolean;
 }
 
-export interface LokiTimeSeriesData extends TimeSeriesData {
-  logs?: LogsData;
-  resultType?: 'matrix' | 'streams';
-}
-
-export interface LokiQueryResult {
-  timeRange?: AbsoluteTimeRange;
-  stepMs?: number;
-  series: TimeSeries[];
-  logs?: LogsData;
-  resultType: 'matrix' | 'streams';
-  metadata?: TimeSeriesMetadata;
+export interface TimeSeriesEntry {
+  time: string;
+  log_count: number | string;
 }
