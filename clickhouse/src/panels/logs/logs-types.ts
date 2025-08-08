@@ -1,7 +1,8 @@
 import { TimeSeriesData, ThresholdOptions } from "@perses-dev/core";
 import { PanelProps, LegendSpecOptions } from '@perses-dev/plugin-system';
+import { ClickHouseTimeSeriesData } from "../../model/click-house-data-types";
 
-export type QueryData = TimeSeriesData; // Type of data returned by a query plugin and supported by this plugin
+export type QueryData = ClickHouseTimeSeriesData; // Type of data returned by a query plugin and supported by this plugin
 
 export type LogsProps = PanelProps<LogsOptions, QueryData>;
 
@@ -16,4 +17,3 @@ export interface LogsOptions {
   thresholds?: ThresholdOptions;
   querySettings?: QuerySettingsOptions;
 }
-

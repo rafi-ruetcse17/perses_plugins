@@ -42,6 +42,10 @@ export interface LogsData {
   hasMore?: boolean;
 }
 
+export interface ClickHouseTimeSeriesData extends TimeSeriesData {
+  logs?: LogsData;
+}
+
 export interface TimeSeriesEntry {
   time: string;
   log_count: number | string;
