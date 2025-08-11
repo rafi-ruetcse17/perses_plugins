@@ -14,40 +14,23 @@
 import React from 'react';
 import { Box, useTheme } from '@mui/material';
 import { Virtuoso } from 'react-virtuoso';
-import { LogsOptions } from '../logs-types';
 import { LogEntry } from '../../../model/click-house-data-types';
 import { LogRow } from './LogRow/LogRow';
 
 interface VirtualizedLogsListProps {
   logs: LogEntry[];
-  spec: LogsOptions;
   expandedRows: Set<number>;
   onToggleExpand: (index: number) => void;
 }
 
-export const VirtualizedLogsList: React.FC<VirtualizedLogsListProps> = ({
-  logs,
-  spec,
-  expandedRows,
-  onToggleExpand,
-}) => {
+export const VirtualizedLogsList: React.FC<VirtualizedLogsListProps> = ({ logs, expandedRows, onToggleExpand }) => {
   const theme = useTheme();
 
   const renderLogRow = (index: number) => {
     const log = logs[index];
     if (!log) return null;
 
-    return (
-      <LogRow
-        // isExpandable={spec.enableDetails}
-        log={log}
-        index={index}
-        isExpanded={expandedRows.has(index)}
-        onToggle={onToggleExpand}
-        // wrap={spec.wrap}
-        // time={spec.time}
-      />
-    );
+    return <LogRow log={log} index={index} isExpanded={expandedRows.has(index)} onToggle={onToggleExpand} />;
   };
 
   return (
