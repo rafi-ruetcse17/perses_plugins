@@ -12,13 +12,12 @@
 // limitations under the License.
 
 import React, { memo, useCallback } from 'react';
-import { Box, Collapse } from '@mui/material';
+import { Box, Collapse, useTheme } from '@mui/material';
 import ChevronRight from 'mdi-material-ui/ChevronRight';
 import { LogTimestamp } from './LogTimestamp';
 import { LogRowContainer, LogRowContent, ExpandButton, LogText } from './LogsStyles';
 import { LogDetailsTable } from './LogDetailsTable';
 import { LogEntry } from '../../../../model/click-house-data-types';
-import { useSeverityColor } from '../hooks/useSeverity';
 
 interface LogRowProps {
   log?: LogEntry;
@@ -32,7 +31,8 @@ interface LogRowProps {
 
 export const LogRow: React.FC<LogRowProps> = memo(
   ({ log, isExpanded, index, onToggle, isExpandable = true, time = false, wrap = false }) => {
-    const severityColor = useSeverityColor(log);
+    const theme = useTheme();
+    const severityColor = theme.palette.text.secondary;
 
     const handleToggle = useCallback(() => {
       if (isExpandable) {
@@ -87,8 +87,7 @@ export const LogRow: React.FC<LogRowProps> = memo(
                     px: '6px',
                     py: '2px',
                     borderRadius: '6px',
-                    backgroundColor: '#FFF8DC',
-                    color: '#8B8000',
+                    backgroundColor: '#FFF3E0',
                     mr: '4px',
                   }}
                 >

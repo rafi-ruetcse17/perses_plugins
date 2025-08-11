@@ -34,6 +34,7 @@ export interface LogEntry {
   Timestamp: number;
   TraceFlags?: string;
   TraceId?: string;
+  log_time?: number;
 }
 
 export interface LogsData {

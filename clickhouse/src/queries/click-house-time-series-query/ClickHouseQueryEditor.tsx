@@ -7,48 +7,50 @@ import {
 import { ReactElement, useEffect, useState } from 'react';
 import { ClickHouseTimeSeriesQuerySpec } from './click-house-query-types';
 import { DATASOURCE_KIND, DEFAULT_DATASOURCE } from './constants';
+
 type ClickHouseTimeSeriesQueryEditorProps = OptionsEditorProps<ClickHouseTimeSeriesQuerySpec>;
+
 export function ClickHouseTimeSeriesQueryEditor(props: ClickHouseTimeSeriesQueryEditorProps): ReactElement {
   const { onChange, value } = props;
   const { datasource } = value;
   const selectedDatasource = datasource ?? DEFAULT_DATASOURCE;
   const [localQuery, setLocalQuery] = useState(value.query || '');
+
   const handleDatasourceChange: DatasourceSelectProps['onChange'] = (newDatasourceSelection) => {
-    console.log('Datasource changed:', {
-      currentDatasource: value.datasource,
-      newDatasource: newDatasourceSelection,
-      fullValue: value,
-    });
     if (!isVariableDatasource(newDatasourceSelection) && newDatasourceSelection.kind === DATASOURCE_KIND) {
       onChange({ ...value, datasource: newDatasourceSelection });
       return;
     }
     throw new Error('Got unexpected non ClickHouse datasource selection');
   };
+
   const handleQueryChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newQuery = event.target.value;
     setLocalQuery(newQuery);
   };
+
   const handleQueryBlur = (event: React.FocusEvent<HTMLTextAreaElement>) => {
-    console.log('Query input blurred:', event.target.value);
     const newQuery = event.target.value;
     if (newQuery !== value.query) {
       onChange({ ...value, query: newQuery });
     }
   };
+
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
       event.preventDefault();
-      // Trigger onChange to run the query
+
       const newQuery = (event.target as HTMLTextAreaElement).value;
       if (newQuery !== value.query) {
         onChange({ ...value, query: newQuery });
       }
     }
   };
+
   useEffect(() => {
     setLocalQuery(value.query || '');
   }, [value.query]);
+
   const containerStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
@@ -94,6 +96,7 @@ export function ClickHouseTimeSeriesQueryEditor(props: ClickHouseTimeSeriesQuery
     whiteSpace: 'pre-wrap',
     lineHeight: '1.3',
   };
+
   return (
     <>
       <DatasourceSelect
@@ -131,22 +134,15 @@ WHERE timestamp BETWEEN '{start}' AND '{end}'
 GROUP BY time ORDER BY time
 -- Logs Query  
 SELECT 
-  timestamp as time,
-  level,
-  message,
-  service_name
+  Timestamp as log_time,
+  Body,
+  ServiceName,
+  ResourceAttributes,
+  SeverityNumber,
+  SeverityText
 FROM application_logs 
 WHERE timestamp >= '{start}' 
-ORDER BY time DESC LIMIT 1000
--- Traces Query
-SELECT 
-  start_time as time,
-  trace_id,
-  service_name,
-  duration_ms
-FROM traces 
-WHERE start_time >= '{start}'
-ORDER BY time DESC`}
+ORDER BY time DESC LIMIT 1000`}
           </div>
         </details>
       </div>

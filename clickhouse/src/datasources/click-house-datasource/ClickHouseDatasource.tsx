@@ -30,8 +30,6 @@ const createClient: DatasourcePlugin<ClickHouseDatasourceSpec, ClickHouseDatasou
       datasourceUrl,
     },
     query: async (params, headers) => {
-      console.log('ClickHouse query called with:', { params, datasourceUrl, specHeaders });
-
       // Use the actual query from params, not hardcoded
       if (!params.query) {
         throw new Error('No query provided in params');
@@ -46,10 +44,6 @@ const createClient: DatasourcePlugin<ClickHouseDatasourceSpec, ClickHouseDatasou
       const url = new URL(datasourceUrl);
       url.searchParams.set('query', finalQuery);
       url.searchParams.set('database', params.database || 'default');
-
-      console.log('ClickHouse URL:', url.toString());
-      console.log('Final Query:', finalQuery);
-      console.log('Full params received:', params);
 
       const init = {
         method: 'GET',
@@ -73,9 +67,7 @@ const createClient: DatasourcePlugin<ClickHouseDatasourceSpec, ClickHouseDatasou
         }
 
         const body = await response.json();
-        console.log('ClickHouse response:', body);
 
-        // ClickHouse with format=JSON returns { data: [...] }
         return {
           status: 'success',
           data: body.data || body,

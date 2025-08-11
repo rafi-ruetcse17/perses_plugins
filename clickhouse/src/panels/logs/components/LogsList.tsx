@@ -7,17 +7,16 @@ import { VirtualizedLogsList } from './VirtualizedLogsList';
 
 interface LogsListProps {
   logs: LogEntry[];
-  spec: LogsOptions;
 }
 
-const LogsList: React.FC<LogsListProps> = ({ logs, spec }) => {
+const LogsList: React.FC<LogsListProps> = ({ logs }) => {
   const { expandedRows, toggleExpand } = useExpandedRows();
 
   if (!logs.length) {
     return <EmptyLogsState />;
   }
 
-  return <VirtualizedLogsList logs={logs} spec={spec} expandedRows={expandedRows} onToggleExpand={toggleExpand} />;
+  return <VirtualizedLogsList logs={logs} expandedRows={expandedRows} onToggleExpand={toggleExpand} />;
 };
 
 export default LogsList;
