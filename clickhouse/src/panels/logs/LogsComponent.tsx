@@ -24,5 +24,5 @@ export function LogsComponent(props: LogsProps): ReactElement | null {
   }
   const logs = queryResults[0]?.data.logs.entries;
 
-  return <LogsList logs={logs} spec={spec} />;
+  return <LogsList logs={logs} />;
 }

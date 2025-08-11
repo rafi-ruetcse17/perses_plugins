@@ -37,7 +37,7 @@ function convertStreamsToLogs(streams: LogEntry[]): LogsData {
     SeverityNumber: entry.SeverityNumber,
     SeverityText: entry.SeverityText,
     SpanId: entry.SpanId,
-    Timestamp: entry.Timestamp,
+    Timestamp: entry.Timestamp ?? entry.log_time,
     TraceFlags: entry.TraceFlags,
     TraceId: entry.TraceId,
   }));
@@ -69,7 +69,6 @@ export const getTimeSeriesData: TimeSeriesQueryPlugin<ClickHouseTimeSeriesQueryS
     end: end.getTime().toString(),
     query,
   });
-  console.log('query response+++', response);
 
   return {
     series: buildTimeSeries(response),
