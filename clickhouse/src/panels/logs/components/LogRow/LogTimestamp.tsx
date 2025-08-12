@@ -20,12 +20,13 @@ interface LogTimestampProps {
 
 export const LogTimestamp: React.FC<LogTimestampProps> = ({ timestamp }) => {
   const theme = useTheme();
+  const isDarkMode = theme.palette.mode === 'dark';
 
   return (
     <Typography
       variant="caption"
       sx={{
-        color: theme.palette.text.secondary,
+        color: isDarkMode ? '#000000' : theme.palette.text.secondary,
         fontSize: '12px',
         whiteSpace: 'nowrap',
         minWidth: 'max-content',
