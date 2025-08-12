@@ -4,9 +4,12 @@ import {
   isVariableDatasource,
   OptionsEditorProps,
 } from '@perses-dev/plugin-system';
-import { ReactElement, useEffect, useState } from 'react';
+import { ReactElement, useCallback, useEffect, useState } from 'react';
 import { ClickHouseTimeSeriesQuerySpec } from './click-house-query-types';
 import { DATASOURCE_KIND, DEFAULT_DATASOURCE } from './constants';
+import { ClickQLEditor } from '../../components';
+import { Stack } from '@mui/material';
+import { queryExample } from '../../components/constants';
 
 type ClickHouseTimeSeriesQueryEditorProps = OptionsEditorProps<ClickHouseTimeSeriesQuerySpec>;
 
@@ -24,68 +27,21 @@ export function ClickHouseTimeSeriesQueryEditor(props: ClickHouseTimeSeriesQuery
     throw new Error('Got unexpected non ClickHouse datasource selection');
   };
 
-  const handleQueryChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newQuery = event.target.value;
+  const handleQueryChange = useCallback((newQuery: string) => {
     setLocalQuery(newQuery);
-  };
+  }, []);
 
-  const handleQueryBlur = (event: React.FocusEvent<HTMLTextAreaElement>) => {
-    const newQuery = event.target.value;
-    if (newQuery !== value.query) {
-      onChange({ ...value, query: newQuery });
-    }
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
-      event.preventDefault();
-
-      const newQuery = (event.target as HTMLTextAreaElement).value;
-      if (newQuery !== value.query) {
-        onChange({ ...value, query: newQuery });
-      }
-    }
-  };
+  const handleQueryExecute = useCallback(
+    (query: string) => {
+      onChange({ ...value, query });
+    },
+    [onChange, value]
+  );
 
   useEffect(() => {
     setLocalQuery(value.query || '');
   }, [value.query]);
 
-  const containerStyle: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px',
-    padding: '16px',
-    border: '1px solid #e0e0e0',
-    borderRadius: '8px',
-    backgroundColor: '#fafafa',
-    marginTop: '10px',
-  };
-  const labelStyle: React.CSSProperties = {
-    fontSize: '14px',
-    fontWeight: 'bold',
-    marginBottom: '8px',
-    color: '#333',
-  };
-  const textareaStyle: React.CSSProperties = {
-    width: '100%',
-    height: '120px',
-    padding: '12px',
-    border: '1px solid #d0d0d0',
-    borderRadius: '4px',
-    fontSize: '13px',
-    color: '#000',
-    fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
-    resize: 'vertical',
-    backgroundColor: '#fff',
-    lineHeight: '1.4',
-  };
-  const hintStyle: React.CSSProperties = {
-    fontSize: '12px',
-    color: '#666',
-    fontStyle: 'italic',
-    marginTop: '4px',
-  };
   const examplesStyle: React.CSSProperties = {
     fontSize: '11px',
     color: '#777',
@@ -98,7 +54,7 @@ export function ClickHouseTimeSeriesQueryEditor(props: ClickHouseTimeSeriesQuery
   };
 
   return (
-    <>
+    <Stack spacing={1.5}>
       <DatasourceSelect
         datasourcePluginKind={DATASOURCE_KIND}
         value={selectedDatasource}
@@ -106,46 +62,25 @@ export function ClickHouseTimeSeriesQueryEditor(props: ClickHouseTimeSeriesQuery
         label="ClickHouse Datasource"
         notched
       />
-      <div style={containerStyle}>
-        <div>
-          <div style={labelStyle}>Query</div>
-          <textarea
-            value={localQuery}
-            onChange={handleQueryChange}
-            onBlur={handleQueryBlur}
-            onKeyDown={handleKeyDown}
-            placeholder="Enter your ClickHouse SQL query here..."
-            style={textareaStyle}
-          />
-          <div style={hintStyle}>Press Ctrl+Enter (Cmd+Enter on Mac) to execute query</div>
-        </div>
-        <details>
-          <summary style={{ cursor: 'pointer', fontSize: '12px', color: '#666', marginBottom: '8px' }}>
-            Query Examples
-          </summary>
-          <div style={examplesStyle}>
-            {`-- Time Series Query
-SELECT 
-  toStartOfMinute(timestamp) as time,
-  avg(cpu_usage) as avg_cpu,
-  max(memory_usage) as max_memory
-FROM system_metrics 
-WHERE timestamp BETWEEN '{start}' AND '{end}'
-GROUP BY time ORDER BY time
--- Logs Query  
-SELECT 
-  Timestamp as log_time,
-  Body,
-  ServiceName,
-  ResourceAttributes,
-  SeverityNumber,
-  SeverityText
-FROM application_logs 
-WHERE timestamp >= '{start}' 
-ORDER BY time DESC LIMIT 1000`}
-          </div>
-        </details>
-      </div>
-    </>
+      <ClickQLEditor
+        value={localQuery}
+        onChange={handleQueryChange}
+        onBlur={() => handleQueryExecute(localQuery)}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+            event.preventDefault();
+            handleQueryExecute(localQuery);
+          }
+        }}
+        placeholder="Enter ClickHouse SQL query"
+      />
+
+      <details>
+        <summary style={{ cursor: 'pointer', fontSize: '12px', color: '#666', marginBottom: '8px' }}>
+          Query Examples
+        </summary>
+        <div style={examplesStyle}>{queryExample}</div>
+      </details>
+    </Stack>
   );
 }
