@@ -33,6 +33,7 @@ export const LogRow: React.FC<LogRowProps> = memo(
   ({ log, isExpanded, index, onToggle, isExpandable = true, time = false, wrap = false }) => {
     const theme = useTheme();
     const severityColor = theme.palette.text.secondary;
+    const isDarkMode = theme.palette.mode === 'dark';
 
     const handleToggle = useCallback(() => {
       if (isExpandable) {
@@ -89,6 +90,7 @@ export const LogRow: React.FC<LogRowProps> = memo(
                     borderRadius: '6px',
                     backgroundColor: '#FFF3E0',
                     mr: '4px',
+                    color: isDarkMode ? '#000000' : theme.palette.text.secondary,
                   }}
                 >
                   {key}:
