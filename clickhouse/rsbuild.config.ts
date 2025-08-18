@@ -20,7 +20,6 @@ export default defineConfig({
     copy: [
       { from: "package.json" },
       { from: "README.md" },
-      { from: "LICENSE", to: "./LICENSE", toType: "file" },
     ],
     distPath: {
       root: "dist",
