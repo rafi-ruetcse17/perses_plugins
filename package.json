@@ -12,6 +12,7 @@
   },
   "workspaces": [
     "barchart",
+    "clickhouse",
     "datasourcevariable",
     "flamechart",
     "gaugechart",
@@ -31,8 +32,7 @@
     "timeserieschart",
     "timeseriestable",
     "tracetable",
-    "tracingganttchart",
-    "clickhouse"
+    "tracingganttchart"
   ],
   "peerDependencies": {
     "@types/react-dom": "^18.3.0",
