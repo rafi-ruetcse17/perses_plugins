@@ -1,5 +1,4 @@
-module github.com/perses/plugins/prometheus
-
+module github.com/perses/plugins/clickhouse
 go 1.24.0
 
 require github.com/perses/perses v0.52.0-beta.3
