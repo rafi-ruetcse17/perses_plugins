@@ -19,9 +19,6 @@ import LogsList from './components/LogsList';
 export function LogsComponent(props: LogsProps): ReactElement | null {
   const { queryResults, spec } = props;
 
-  console.log('Panel data', queryResults);
-  console.log('Panel spec', spec);
-
   if (queryResults[0]?.data.logs === undefined) {
     return (
       <Typography

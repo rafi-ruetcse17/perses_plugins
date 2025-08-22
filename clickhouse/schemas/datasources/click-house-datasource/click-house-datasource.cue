@@ -8,8 +8,6 @@ import (
 kind: "ClickHouseDatasource"
 spec: {
 	#directUrl | #proxy
-	username: string
-	password: string
 }
 
 #directUrl: {
