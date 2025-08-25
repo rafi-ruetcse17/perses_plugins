@@ -13,7 +13,6 @@
 
 import React from 'react';
 import { LogEntry } from '../../../model/click-house-data-types';
-import { LogsOptions } from '../logs-types';
 import { EmptyLogsState } from './EmptyLogsState';
 import { useExpandedRows } from './hooks/useExpandedRows';
 import { VirtualizedLogsList } from './VirtualizedLogsList';

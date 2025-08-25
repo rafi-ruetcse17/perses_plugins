@@ -11,30 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { AbsoluteTimeRange, TimeSeries, TimeSeriesData, TimeSeriesMetadata } from '@perses-dev/core';
+import { TimeSeriesData } from '@perses-dev/core';
 
 export interface LogEntry {
-  Body?: string;
-  LogAttributes?: {
-    [key: string]: string;
-  };
-  ResourceAttributes?: {
-    [key: string]: string;
-  };
-  ScopeAttributes?: {
-    [key: string]: string;
-  };
-  ScopeName?: string;
-  ScopeVersion?: string;
-  ScopeSchemaUrl?: string;
-  ServiceName?: string;
-  SeverityNumber?: string;
-  SeverityText?: string;
-  SpanId?: string;
-  Timestamp: number;
-  TraceFlags?: string;
-  TraceId?: string;
-  log_time?: number;
+  [key: string]: any;
+  line?: string;
 }
 
 export interface LogsData {

@@ -37,23 +37,48 @@ function buildTimeSeries(response?: DatasourceQueryResponse): TimeSeries[] {
   ];
 }
 
+function flattenObject(
+  obj: Record<string, any>,
+  parentKey = '',
+  result: Record<string, any> = {}
+): Record<string, any> {
+  for (const [key, value] of Object.entries(obj)) {
+    const newKey = parentKey ? `${parentKey}.${key}` : key;
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      flattenObject(value, newKey, result);
+    } else {
+      result[newKey] = value;
+    }
+  }
+
+  return result;
+}
+
 function convertStreamsToLogs(streams: LogEntry[]): LogsData {
-  const entries: LogEntry[] = streams.map((entry) => ({
-    Body: entry.Body,
-    LogAttributes: entry.LogAttributes,
-    ResourceAttributes: entry.ResourceAttributes,
-    ScopeAttributes: entry.ScopeAttributes,
-    ScopeName: entry.ScopeName,
-    ScopeVersion: entry.ScopeVersion,
-    ScopeSchemaUrl: entry.ScopeSchemaUrl,
-    ServiceName: entry.ServiceName,
-    SeverityNumber: entry.SeverityNumber,
-    SeverityText: entry.SeverityText,
-    SpanId: entry.SpanId,
-    Timestamp: entry.Timestamp ?? entry.log_time,
-    TraceFlags: entry.TraceFlags,
-    TraceId: entry.TraceId,
-  }));
+  const entries: LogEntry[] = streams.map((entry) => {
+    const flattened = flattenObject(entry);
+
+    if (!flattened.Timestamp && flattened.log_time) {
+      flattened.Timestamp = flattened.log_time;
+    }
+
+    const sortedEntry: Record<string, any> = {};
+    Object.keys(flattened)
+      .sort((a, b) => a.localeCompare(b))
+      .forEach((key) => {
+        sortedEntry[key] = flattened[key];
+      });
+
+    const line = Object.entries(sortedEntry)
+      .filter(([key]) => key !== 'Timestamp')
+      .map(([key, value]) => `${key}: ${value ?? '--'}`)
+      .join(' | ');
+
+    return {
+      ...sortedEntry,
+      line,
+    } as LogEntry;
+  });
 
   return {
     entries,

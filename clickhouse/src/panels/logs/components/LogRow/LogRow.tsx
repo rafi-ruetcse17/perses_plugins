@@ -43,16 +43,6 @@ export const LogRow: React.FC<LogRowProps> = memo(
 
     if (!log) return null;
 
-    const inlineFields: Record<string, string | number | undefined | null> = {
-      body: log.Body,
-      service_name: log.ServiceName,
-      k8s_container_name: log.ResourceAttributes?.['k8s.container.name'],
-      k8s_pod_name: log.ResourceAttributes?.['k8s.pod.name'],
-      k8s_namespace: log.ResourceAttributes?.['k8s.namespace.name'],
-      severity_text: log.SeverityText,
-      severity_number: log.SeverityNumber,
-    };
-
     return (
       <LogRowContainer severityColor={severityColor}>
         <LogRowContent onClick={handleToggle} isExpandable={isExpandable} time={time}>
@@ -71,7 +61,7 @@ export const LogRow: React.FC<LogRowProps> = memo(
             </Box>
           )}
 
-          <LogTimestamp timestamp={log.Timestamp} />
+          <LogTimestamp timestamp={log?.Timestamp} />
 
           <Box
             sx={{
@@ -80,24 +70,9 @@ export const LogRow: React.FC<LogRowProps> = memo(
               marginLeft: '36px',
             }}
           >
-            {Object.entries(inlineFields).map(([key, value]) => (
-              <LogText key={key} wrap={wrap}>
-                <Box
-                  component="span"
-                  sx={{
-                    px: '6px',
-                    py: '2px',
-                    borderRadius: '6px',
-                    backgroundColor: '#FFF3E0',
-                    mr: '4px',
-                    color: isDarkMode ? '#000000' : theme.palette.text.secondary,
-                  }}
-                >
-                  {key}:
-                </Box>
-                {value === '' || value === undefined || value === null ? '--' : value}
-              </LogText>
-            ))}
+            <LogText variant="body2" wrap={wrap}>
+              {log?.line}
+            </LogText>
           </Box>
         </LogRowContent>
 
