@@ -22,16 +22,6 @@ interface LogDetailsTableProps {
 export const LogDetailsTable: React.FC<LogDetailsTableProps> = ({ log }) => {
   const theme = useTheme();
 
-  const rows: Record<string, string | undefined> = {
-    body: log.Body,
-    service_name: log.ServiceName,
-    k8s_container_name: log.ResourceAttributes?.['k8s.container.name'],
-    k8s_pod_name: log.ResourceAttributes?.['k8s.pod.name'],
-    k8s_namespace: log.ResourceAttributes?.['k8s.namespace.name'],
-    severity_text: log.SeverityText,
-    severity_number: log.SeverityNumber,
-  };
-
   return (
     <Table
       size="small"
@@ -45,7 +35,7 @@ export const LogDetailsTable: React.FC<LogDetailsTableProps> = ({ log }) => {
       }}
     >
       <TableBody>
-        {Object.entries(rows).map(([key, value]) => (
+        {Object.entries(log).map(([key, value]) => (
           <TableRow
             key={key}
             sx={{
