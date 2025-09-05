@@ -12,3 +12,6 @@
 // limitations under the License.
 
 export { getPluginModule } from './getPluginModule';
+export * from './panels';
+export * from './queries';
+export * from './datasources';

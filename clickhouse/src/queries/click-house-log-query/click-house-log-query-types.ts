@@ -11,7 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from './get-click-house-data';
-export * from './ClickHouseQuery';
-export * from './ClickHouseQueryEditor';
-export * from './click-house-query-types';
+import { DatasourceSelector } from '@perses-dev/core';
+
+export interface ClickHouseLogQuerySpec {
+  query: string;
+  datasource?: DatasourceSelector;
+}

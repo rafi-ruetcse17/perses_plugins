@@ -42,7 +42,6 @@
   ],
   "perses": {
     "moduleName": "ClickHouse",
-    "moduleOrg": "clickhouse-org",
     "schemasPath": "schemas",
     "plugins": [
       {
@@ -58,12 +57,21 @@
         "kind": "TimeSeriesQuery",
         "spec": {
           "display": {
-            "name": "ClickHouse Query"
+            "name": "ClickHouse Time Series Query"
           },
           "name": "ClickHouseTimeSeriesQuery"
         }
-      }
-      ,{
+      },
+      {
+        "kind": "LogQuery",
+        "spec": {
+          "display": {
+            "name": "ClickHouse Log Query"
+          },
+          "name": "ClickHouseLogQuery"
+        }
+      },
+      {
         "kind": "Panel",
         "spec": {
           "display": {
