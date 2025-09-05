@@ -19,6 +19,6 @@ import { LogsSettingsEditor } from './LogsSettingsEditor';
 export const Logs: PanelPlugin<LogsOptions, LogsProps> = {
   PanelComponent: LogsComponent,
   panelOptionsEditorComponents: [{ label: 'Settings', content: LogsSettingsEditor }],
-  supportedQueryTypes: ['TimeSeriesQuery'],
+  supportedQueryTypes: ['LogQuery'],
   createInitialOptions: () => ({}),
 };

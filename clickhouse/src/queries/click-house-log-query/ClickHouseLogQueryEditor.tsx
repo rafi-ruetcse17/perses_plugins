@@ -18,15 +18,15 @@ import {
   OptionsEditorProps,
 } from '@perses-dev/plugin-system';
 import { ReactElement, useCallback, useEffect, useState } from 'react';
-import { ClickHouseTimeSeriesQuerySpec } from './click-house-query-types';
 import { DATASOURCE_KIND, DEFAULT_DATASOURCE } from '../constants';
 import { ClickQLEditor } from '../../components';
 import { Stack } from '@mui/material';
 import { queryExample } from '../../components/constants';
+import { ClickHouseLogQuerySpec } from './click-house-log-query-types';
 
-type ClickHouseTimeSeriesQueryEditorProps = OptionsEditorProps<ClickHouseTimeSeriesQuerySpec>;
+type ClickHouseQueryEditorProps = OptionsEditorProps<ClickHouseLogQuerySpec>;
 
-export function ClickHouseTimeSeriesQueryEditor(props: ClickHouseTimeSeriesQueryEditorProps): ReactElement {
+export function ClickHouseLogQueryEditor(props: ClickHouseQueryEditorProps): ReactElement {
   const { onChange, value } = props;
   const { datasource } = value;
   const selectedDatasource = datasource ?? DEFAULT_DATASOURCE;

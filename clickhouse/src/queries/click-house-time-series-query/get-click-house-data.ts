@@ -14,8 +14,8 @@
 import { TimeSeries } from '@perses-dev/core';
 import { TimeSeriesQueryPlugin, replaceVariables } from '@perses-dev/plugin-system';
 import { ClickHouseTimeSeriesQuerySpec, DatasourceQueryResponse } from './click-house-query-types';
-import { DEFAULT_DATASOURCE } from './constants';
-import { LogEntry, LogsData, TimeSeriesEntry } from '../../model/click-house-data-types';
+import { DEFAULT_DATASOURCE } from '../constants';
+import { TimeSeriesEntry } from '../../model/click-house-data-types';
 import { ClickHouseClient, ClickHouseQueryResponse } from '../../model/click-house-client';
 
 function buildTimeSeries(response?: DatasourceQueryResponse): TimeSeries[] {
@@ -35,56 +35,6 @@ function buildTimeSeries(response?: DatasourceQueryResponse): TimeSeries[] {
       values,
     },
   ];
-}
-
-function flattenObject(
-  obj: Record<string, any>,
-  parentKey = '',
-  result: Record<string, any> = {}
-): Record<string, any> {
-  for (const [key, value] of Object.entries(obj)) {
-    const newKey = parentKey ? `${parentKey}.${key}` : key;
-    if (value && typeof value === 'object' && !Array.isArray(value)) {
-      flattenObject(value, newKey, result);
-    } else {
-      result[newKey] = value;
-    }
-  }
-
-  return result;
-}
-
-function convertStreamsToLogs(streams: LogEntry[]): LogsData {
-  const entries: LogEntry[] = streams.map((entry) => {
-    const flattened = flattenObject(entry);
-
-    if (!flattened.Timestamp && flattened.log_time) {
-      flattened.Timestamp = flattened.log_time;
-    }
-
-    const sortedEntry: Record<string, any> = {};
-    Object.keys(flattened)
-      .sort((a, b) => a.localeCompare(b))
-      .forEach((key) => {
-        sortedEntry[key] = flattened[key];
-      });
-
-    const line = Object.entries(sortedEntry)
-      .filter(([key]) => key !== 'Timestamp')
-      .map(([key, value]) => `<${key}> ${value === '' || value === null || value === undefined ? '--' : value}`)
-      .join(' ');
-
-    return {
-      timestamp: sortedEntry?.Timestamp,
-      labels: sortedEntry,
-      line,
-    } as LogEntry;
-  });
-
-  return {
-    entries,
-    totalCount: entries.length,
-  };
 }
 
 export const getTimeSeriesData: TimeSeriesQueryPlugin<ClickHouseTimeSeriesQuerySpec>['getTimeSeriesData'] = async (
@@ -113,7 +63,6 @@ export const getTimeSeriesData: TimeSeriesQueryPlugin<ClickHouseTimeSeriesQueryS
     series: buildTimeSeries(response),
     timeRange: { start, end },
     stepMs: 30 * 1000,
-    logs: convertStreamsToLogs(response.data),
     metadata: {
       executedQueryString: query,
     },
